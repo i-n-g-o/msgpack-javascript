@@ -340,8 +340,9 @@ function decode() { // @return Mix:
     case 0xd0:  num  =  buf[++_idx];
                 return num < 0x80 ? num : num - 0x100; // 0x80 * 2
     // 0xdb: raw32, 0xda: raw16, 0xa0: raw ( string )
-    case 0xdb:  num +=  buf[++_idx] * 0x1000000 + (buf[++_idx] << 16);
-    case 0xda:  num += (buf[++_idx] << 8)       +  buf[++_idx];
+    case 0xdb:  num +=  buf[++_idx] * 0x1000000 + (buf[++_idx] << 16); // bug?
+    case 0xda:  num += (buf[++_idx] << 8)       +  buf[_idx+1];
+    case 0xd9:  num += buf[++_idx];
     case 0xa0:  // utf8.decode
                 for (ary = [], i = _idx, iz = i + num; i < iz; ) {
                     c = buf[++i]; // lead byte
