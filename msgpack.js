@@ -199,6 +199,9 @@ function encode(rv,      // @param ByteArray: result
                                        (size >>  8) & 0xff, size & 0xff);
             }
             break;
+        case "function":
+            //ignore
+            break;
         default: // array or hash
             if (++depth >= _MAX_DEPTH) {
                 _error = 1; // CYCLIC_REFERENCE_ERROR
@@ -223,9 +226,12 @@ function encode(rv,      // @param ByteArray: result
                 rv.push(0); // placeholder
                 size = 0;
                 for (i in mix) {
-                    ++size;
-                    encode(rv, i,      depth);
-                    encode(rv, mix[i], depth);
+                    //igonre function
+                    if (typeof mix[i] !== 'function') {
+                        ++size;
+                        encode(rv, i,      depth);
+                        encode(rv, mix[i], depth);
+                    }
                 }
                 if (size < 16) {
                     rv[pos] = 0x80 + size; // rewrite
